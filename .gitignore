@@ -1,0 +1,37 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log
+pnpm-debug.log
+yarn-debug.log
+yarn-error.log
+lerna-debug.log
+
+# turbo
+.turbo
+dist
+.next
+.nuxt
+
+# database
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# testing
+coverage

@@ -1,0 +1,62 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  fullName      String
+  gender        String
+  age           Int
+  email         String         @unique
+  password      String
+
+  subscriptions Subscription[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Offer {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Int
+
+  isForFirstSubscription Boolean @default(false)
+  isForSwitch            Boolean @default(true)
+  isForReSubscription    Boolean @default(true)
+
+  // Optional: store advantages as JSON (flexible)
+  advantages Json
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id        String              @id @default(uuid())
+
+  userId    String
+  offerId   String
+
+  status    SubscriptionStatus
+
+  startedAt DateTime           @default(now())
+  endedAt   DateTime?
+
+  user      User               @relation(fields: [userId], references: [id])
+  offer     Offer              @relation(fields: [offerId], references: [id])
+
+  createdAt DateTime           @default(now())
+}
