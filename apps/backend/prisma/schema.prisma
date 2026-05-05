@@ -31,6 +31,9 @@ model Offer {
   title       String
   description String
   price       Int
+  minutes     String   @default("")
+  texts       String   @default("")
+  data        String   @default("")
 
   isForFirstSubscription Boolean @default(false)
   isForSwitch            Boolean @default(true)

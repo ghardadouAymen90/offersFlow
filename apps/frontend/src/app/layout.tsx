@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
+import { ThemeRegistry } from '@/lib/ThemeRegistry.tsx';
 
 export const metadata: Metadata = {
   title: 'OffersFlow',
-  description: 'Frontend for OffersFlow',
+  description: 'Frontend for OffersFlow'
 };
 
 export default function RootLayout({
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ThemeRegistry>{children}</ThemeRegistry>
+      </body>
     </html>
   );
 }

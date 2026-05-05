@@ -1,7 +1,22 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+
 export default function Page() {
-  return (
-    <main style={{ padding: '2rem' }}>
-      <h1>Welcome to OffersFlow</h1>
-    </main>
-  );
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated) {
+        router.push('/dashboard');
+      } else {
+        router.push('/login');
+      }
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  return <main />;
 }
