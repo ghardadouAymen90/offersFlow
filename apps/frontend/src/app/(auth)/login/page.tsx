@@ -15,10 +15,11 @@ import {
 import { AuthForm } from '@/components/AuthForm';
 import { LoginPayload } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
+import { login } from '@/app/actions/auth/login';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, refetch } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -35,28 +36,12 @@ export default function LoginPage() {
     setSuccessMessage('');
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setErrorMessage(result.error || 'An error occurred during login');
-        return;
-      }
-
+      await login(data);
       setSuccessMessage('Login successful! Redirecting...');
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 1500);
+      await refetch();
     } catch (error) {
       console.error('Login error:', error);
-      setErrorMessage('An unexpected error occurred');
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }

@@ -10,6 +10,7 @@ generator client {
 enum SubscriptionStatus {
   ACTIVE
   CANCELLED
+  PAUSED
 }
 
 model User {
@@ -21,6 +22,7 @@ model User {
   password      String
 
   subscriptions Subscription[]
+  payments      Payment[]
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -53,13 +55,33 @@ model Subscription {
   userId    String
   offerId   String
 
-  status    SubscriptionStatus
+  status    SubscriptionStatus  @default(ACTIVE)
 
-  startedAt DateTime           @default(now())
+  startedAt DateTime            @default(now())
   endedAt   DateTime?
 
-  user      User               @relation(fields: [userId], references: [id])
-  offer     Offer              @relation(fields: [offerId], references: [id])
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offer     Offer               @relation(fields: [offerId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime           @default(now())
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@unique([userId, offerId, status])
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+
+  userId        String
+  subscriptionId String? @unique
+
+  email         String
+  address       String
+  phoneNumber   String
+  cardLastFour  String   // Only store last 4 digits for security
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

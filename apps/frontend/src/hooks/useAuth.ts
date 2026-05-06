@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { User } from '@/types/user';
+import { getCurrentUser } from '@/app/actions/auth/me';
+import { logout as logoutAction } from '@/app/actions/auth/logout';
 
 interface UseAuthState {
   user: User | null;
@@ -22,25 +24,18 @@ export function useAuth() {
     const fetchUser = async () => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
       try {
-        const response = await fetch('/api/auth/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const user = await getCurrentUser();
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            setState({
-              user: null,
-              isLoading: false,
-              isAuthenticated: false,
-              error: null,
-            });
-            return;
-          }
-          throw new Error(`Failed to fetch user: ${response.statusText}`);
+        if (!user) {
+          setState({
+            user: null,
+            isLoading: false,
+            isAuthenticated: false,
+            error: null,
+          });
+          return;
         }
 
-        const user = await response.json();
         setState({
           user,
           isLoading: false,
@@ -64,25 +59,18 @@ export function useAuth() {
   const refetch = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
     try {
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include',
-      });
+      const user = await getCurrentUser();
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          setState({
-            user: null,
-            isLoading: false,
-            isAuthenticated: false,
-            error: null,
-          });
-          return;
-        }
-        throw new Error(`Failed to fetch user: ${response.statusText}`);
+      if (!user) {
+        setState({
+          user: null,
+          isLoading: false,
+          isAuthenticated: false,
+          error: null,
+        });
+        return;
       }
 
-      const user = await response.json();
       setState({
         user,
         isLoading: false,
@@ -102,10 +90,7 @@ export function useAuth() {
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await logoutAction();
       setState({
         user: null,
         isLoading: false,

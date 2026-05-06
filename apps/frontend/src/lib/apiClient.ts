@@ -29,21 +29,14 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
   if (!response.ok) {
     const errorData = data as ApiErrorResponse;
-    throw new ApiError(
-      response.status,
-      errorData.message || 'An error occurred',
-      errorData.error
-    );
+    throw new ApiError(response.status, errorData.message || 'An error occurred', errorData.error);
   }
 
   return data as T;
 }
 
 export const apiClient = {
-  async get<T>(
-    endpoint: string,
-    options?: ApiOptions
-  ): Promise<T> {
+  async get<T>(endpoint: string, options?: ApiOptions): Promise<T> {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'GET',
       headers: {
@@ -57,30 +50,24 @@ export const apiClient = {
     return handleResponse<T>(response);
   },
 
-  async post<T>(
-    endpoint: string,
-    body?: unknown,
-    options?: ApiOptions
-  ): Promise<T> {
+  async post<T>(endpoint: string, body?: unknown, options?: ApiOptions): Promise<T> {
+    const { headers, ...rest } = { ...(options ?? {}) };
+
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...options?.headers,
+        ...headers,
       },
       body: body ? JSON.stringify(body) : undefined,
       credentials: options?.includeCredentials ? 'include' : 'omit',
-      ...options,
+      ...rest,
     });
 
     return handleResponse<T>(response);
   },
 
-  async put<T>(
-    endpoint: string,
-    body?: unknown,
-    options?: ApiOptions
-  ): Promise<T> {
+  async put<T>(endpoint: string, body?: unknown, options?: ApiOptions): Promise<T> {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
       headers: {
@@ -95,10 +82,7 @@ export const apiClient = {
     return handleResponse<T>(response);
   },
 
-  async delete<T>(
-    endpoint: string,
-    options?: ApiOptions
-  ): Promise<T> {
+  async delete<T>(endpoint: string, options?: ApiOptions): Promise<T> {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'DELETE',
       headers: {

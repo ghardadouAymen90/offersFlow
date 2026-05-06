@@ -1,10 +1,23 @@
 'use client';
 
-import { Box, Typography, Paper, Button, TextField, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+} from '@mui/material';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { user, logout, refetch } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -16,7 +29,9 @@ export default function ProfilePage() {
     gender: user?.gender || 'MALE',
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: string }>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: string }>
+  ) => {
     const { name, value } = e.target as any;
     setFormData((prev) => ({
       ...prev,
@@ -136,7 +151,12 @@ export default function ProfilePage() {
 
             <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
-              <Select name="gender" value={formData.gender} onChange={handleInputChange as any} label="Gender">
+              <Select
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange as any}
+                label="Gender"
+              >
                 <MenuItem value="MALE">Male</MenuItem>
                 <MenuItem value="FEMALE">Female</MenuItem>
                 <MenuItem value="OTHER">Other</MenuItem>
@@ -148,11 +168,7 @@ export default function ProfilePage() {
             </Alert>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                variant="contained"
-                onClick={handleSave}
-                disabled={isSaving}
-              >
+              <Button variant="contained" onClick={handleSave} disabled={isSaving}>
                 Save Changes
               </Button>
               <Button
@@ -174,6 +190,12 @@ export default function ProfilePage() {
           </Box>
         )}
       </Paper>
+
+      <Box sx={{ mt: 4, textAlign: 'center' }}>
+        <Button variant="text" onClick={() => router.push('/dashboard')}>
+          ← Back to Dashbord
+        </Button>
+      </Box>
     </Box>
   );
 }

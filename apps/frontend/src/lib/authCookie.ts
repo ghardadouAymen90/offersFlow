@@ -4,7 +4,7 @@ const TOKEN_COOKIE_NAME = 'auth_token';
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  sameSite: 'lax' as const, // let it pass from a cross domain get
   maxAge: 24 * 60 * 60, // 24 hours
 };
 

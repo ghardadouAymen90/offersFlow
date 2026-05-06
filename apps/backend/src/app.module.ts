@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
-import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OffersModule } from './modules/offers/offers.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -12,9 +12,9 @@ import { OffersModule } from './modules/offers/offers.module';
       envFilePath: '.env.local',
     }),
     PrismaModule,
-    HealthModule,
     AuthModule,
     OffersModule,
+    SubscriptionsModule,
   ],
 })
 export class AppModule {}

@@ -21,11 +21,6 @@ export class OffersService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<Offer[]> {
-    console.log('Fetching all offers from the database', await this.prisma.offer.findMany({
-      orderBy: {
-        price: 'asc',
-      },
-    }));
     return this.prisma.offer.findMany({
       orderBy: {
         price: 'asc',

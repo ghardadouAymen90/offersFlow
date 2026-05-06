@@ -1,11 +1,9 @@
 'use client';
 
 import { Box, Typography, Paper, Button } from '@mui/material';
-import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 
 export default function DashboardPage() {
-  const { user } = useAuth();
 
   return (
     <Box>
@@ -43,43 +41,6 @@ export default function DashboardPage() {
         </Paper>
       </Box>
 
-      <Paper sx={{ p: 3 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Account Information
-        </Typography>
-        {user && (
-          <Box sx={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: 2 }}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Full Name:
-            </Typography>
-            <Typography variant="body2">{user.fullName}</Typography>
-
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Email:
-            </Typography>
-            <Typography variant="body2">{user.email}</Typography>
-
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Age:
-            </Typography>
-            <Typography variant="body2">{user.age}</Typography>
-
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Gender:
-            </Typography>
-            <Typography variant="body2">
-              {user.gender === 'MALE' ? 'Male' : user.gender === 'FEMALE' ? 'Female' : 'Other'}
-            </Typography>
-
-            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-              Member Since:
-            </Typography>
-            <Typography variant="body2">
-              {new Date(user.createdAt).toLocaleDateString()}
-            </Typography>
-          </Box>
-        )}
-      </Paper>
     </Box>
   );
 }

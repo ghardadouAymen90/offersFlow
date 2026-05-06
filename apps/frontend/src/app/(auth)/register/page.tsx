@@ -15,10 +15,11 @@ import {
 import { AuthForm } from '@/components/AuthForm';
 import { RegisterPayload } from '@/types/user';
 import { useAuth } from '@/hooks/useAuth';
+import { register } from '@/app/actions/auth/register';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, refetch } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -35,30 +36,12 @@ export default function RegisterPage() {
     setSuccessMessage('');
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setErrorMessage(
-          result.error || 'An error occurred during registration'
-        );
-        return;
-      }
-
+      await register(data);
       setSuccessMessage('Account created successfully! Redirecting...');
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 2000);
+      await refetch();
     } catch (error) {
       console.error('Registration error:', error);
-      setErrorMessage('An unexpected error occurred');
+      setErrorMessage(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }

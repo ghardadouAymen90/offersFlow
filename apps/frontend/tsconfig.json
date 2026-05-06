@@ -19,14 +19,15 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "isolatedModules": true,
-    "incremental": true,
+    "incremental": false,
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     },
-    "allowJs": true,
+    "allowJs": false,
+    "ignoreDeprecations": "5.0",
     "plugins": [
       {
         "name": "next"
@@ -35,11 +36,14 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "coverage"
   ]
 }
