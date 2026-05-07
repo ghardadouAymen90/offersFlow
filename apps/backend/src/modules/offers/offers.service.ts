@@ -1,20 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-
-export interface Offer {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  minutes: string;
-  texts: string;
-  data: string;
-  isForFirstSubscription: boolean;
-  isForSwitch: boolean;
-  isForReSubscription: boolean;
-  advantages: any;
-  createdAt: Date;
-}
+import { Offer  } from '@prisma/client';
 
 @Injectable()
 export class OffersService {
@@ -25,7 +11,7 @@ export class OffersService {
       orderBy: {
         price: 'asc',
       },
-    })
+    });
   }
 
   async findById(id: string): Promise<Offer | null> {

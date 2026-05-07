@@ -4,14 +4,15 @@ import { Box, Typography, Paper, Button } from '@mui/material';
 import Link from 'next/link';
 
 export default function DashboardPage() {
-
   return (
     <Box>
       <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold' }}>
         Dashboard
       </Typography>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3, mb: 4 }}>
+      <Box
+        sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3, mb: 4 }}
+      >
         <Paper sx={{ p: 3, textAlign: 'center' }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Browse Offers
@@ -40,7 +41,6 @@ export default function DashboardPage() {
           </Link>
         </Paper>
       </Box>
-
     </Box>
   );
 }

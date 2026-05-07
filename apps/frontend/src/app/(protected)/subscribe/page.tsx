@@ -15,8 +15,9 @@ import {
   Divider,
 } from '@mui/material';
 import { useAuth } from '@/hooks/useAuth';
-import { PaymentForm } from './_components/PaymentForm';
-import { Offer, fetchOffers } from '@/app/actions/offers';
+import { PaymentForm } from './_components/paymentForm/PaymentForm';
+import { fetchOffers } from '@/app/actions/offers';
+import { Offer } from '@/types/offer';
 
 export default function SubscribePage() {
   const router = useRouter();

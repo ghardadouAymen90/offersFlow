@@ -9,7 +9,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env.local',
+      envFilePath: '.env',
     }),
     PrismaModule,
     AuthModule,

@@ -2,20 +2,7 @@
 
 import { apiClient } from '@/lib/apiClient';
 import { getAuthHeader } from '@/lib/authCookie';
-
-export interface Subscription {
-  id: string;
-  offerId: string;
-  status: string;
-}
-
-export interface CreateSubscriptionPayload {
-  offerId: string;
-  email: string;
-  address: string;
-  phoneNumber: string;
-  cardNumber: string;
-}
+import { CreateSubscriptionPayload, Subscription } from '@/types/subscription';
 
 export async function getCurrentSubscription(): Promise<Subscription | null> {
   try {

@@ -1,16 +1,7 @@
 'use server';
 
 import { apiClient } from '@/lib/apiClient';
-
-export interface Offer {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  minutes: number | string;
-  texts: number | string;
-  data: string;
-}
+import { Offer } from '@/types/offer';
 
 export async function fetchOffers(): Promise<Offer[]> {
   try {

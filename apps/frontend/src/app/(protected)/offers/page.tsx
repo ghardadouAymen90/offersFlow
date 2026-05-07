@@ -14,9 +14,10 @@ import {
   Alert,
   Chip,
 } from '@mui/material';
-import { fetchOffers, Offer } from '@/app/actions/offers';
+import { fetchOffers } from '@/app/actions/offers';
 import { getCurrentSubscription } from '@/app/actions/subscriptions';
 import { useSubscriptionStore } from '@/store/subscription.store';
+import { Offer } from '@/types/offer';
 
 export default function OffersPage() {
   const router = useRouter();

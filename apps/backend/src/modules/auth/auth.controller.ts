@@ -11,6 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { User } from '@prisma/client';
+import { Throttle } from '@nestjs/throttler';
 
 interface RegisterRequest {
   email: string;
@@ -35,12 +36,14 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() registerDto: RegisterRequest): Promise<AuthResponse> {
     return this.authService.register(registerDto);
   }
 
   @Post('login')
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginRequest): Promise<AuthResponse> {
     return this.authService.login(loginDto);
@@ -48,6 +51,7 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ long: { limit: 100, ttl: 900000 } })
   async getMe(@Request() req: any): Promise<Omit<User, 'password'>> {
     const { password, ...userWithoutPassword } = req.user;
     return userWithoutPassword;

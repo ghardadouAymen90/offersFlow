@@ -17,15 +17,7 @@ import {
   validateAddress,
 } from '@/lib/validators/paymentValidator';
 import { createSubscription } from '@/app/actions/subscriptions';
-
-interface PaymentFormProps {
-  offerId: string;
-  offerTitle: string;
-  offerPrice: number;
-  userEmail: string;
-  onSuccess: () => void;
-  onError: (error: string) => void;
-}
+import { PaymentFormProps } from './type';
 
 export function PaymentForm({
   offerId,
@@ -139,9 +131,7 @@ export function PaymentForm({
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         {successMessage && <Alert severity="success">{successMessage}</Alert>}
         {successMessage && (
-          <Alert
-            severity="success"
-          >
+          <Alert severity="success">
             <CircularProgress />
             Thank you for subscribing with us! you will be redirected to offers page in secondes!
           </Alert>
