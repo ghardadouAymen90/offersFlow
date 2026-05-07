@@ -51,12 +51,9 @@ model Offer {
 
 model Subscription {
   id        String              @id @default(uuid())
-
   userId    String
   offerId   String
-
   status    SubscriptionStatus  @default(ACTIVE)
-
   startedAt DateTime            @default(now())
   endedAt   DateTime?
 
@@ -66,7 +63,7 @@ model Subscription {
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 
-  @@unique([userId, offerId, status])
+  @@unique([userId, status])
 }
 
 model Payment {

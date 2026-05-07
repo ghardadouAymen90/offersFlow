@@ -65,10 +65,13 @@ offersflow/
 
    ```bash
    # Generate Prisma client and push schema to database
-   pnpm db:push
+   pnpm run prisma:migration
 
-   # Or run migrations (after new migrations)
-   pnpm db:migrate:deploy
+   # then run migrations (after new migrations)
+   pnpm run db:migrate:deploy
+
+   # Then seed data
+   pnpm run db:seed
    ```
 
 ## Development
@@ -76,7 +79,7 @@ offersflow/
 ### Run all apps in development mode
 
 ```bash
-pnpm dev
+pnpm run dev
 ```
 
 This starts:

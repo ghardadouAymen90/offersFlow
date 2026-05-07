@@ -22,7 +22,7 @@ export default function SubscribePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, user, isLoading: authLoading } = useAuth();
-  
+
   const offerId = searchParams.get('offerId');
   const [offer, setOffer] = useState<Offer | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ export default function SubscribePage() {
       try {
         const offers = await fetchOffers();
         const selectedOffer = offers.find((o) => o.id === offerId);
-        
+
         if (!selectedOffer) {
           setError('Offer not found');
         } else {
@@ -64,8 +64,8 @@ export default function SubscribePage() {
 
   const handleSubscriptionSuccess = () => {
     setTimeout(() => {
-      router.push('/dashboard');
-    }, 2000);
+      router.push('/offers');
+    }, 5000);
   };
 
   const handleSubscriptionError = (error: string) => {
@@ -105,11 +105,7 @@ export default function SubscribePage() {
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
             </Alert>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => router.push('/offers')}
-            >
+            <Button variant="contained" fullWidth onClick={() => router.push('/offers')}>
               Back to Offers
             </Button>
           </Paper>
@@ -161,7 +157,7 @@ export default function SubscribePage() {
                   <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
                     Offer Summary
                   </Typography>
-                  
+
                   <Box sx={{ mb: 2 }}>
                     <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
                       {offer.title}
@@ -221,10 +217,7 @@ export default function SubscribePage() {
           </Box>
 
           <Box sx={{ mt: 4, textAlign: 'center' }}>
-            <Button
-              variant="text"
-              onClick={() => router.push('/offers')}
-            >
+            <Button variant="text" onClick={() => router.push('/offers')}>
               ← Back to Offers
             </Button>
           </Box>

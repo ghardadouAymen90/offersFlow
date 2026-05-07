@@ -138,6 +138,14 @@ export function PaymentForm({
       >
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         {successMessage && <Alert severity="success">{successMessage}</Alert>}
+        {successMessage && (
+          <Alert
+            severity="success"
+          >
+            <CircularProgress />
+            Thank you for subscribing with us! you will be redirected to offers page in secondes!
+          </Alert>
+        )}
 
         <TextField
           label="Email"

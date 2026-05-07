@@ -22,7 +22,7 @@ export async function getCurrentSubscription(): Promise<Subscription | null> {
     const headers = await getAuthHeader();
     const subscription = await apiClient.get<Subscription>('/subscriptions/current', {
       headers,
-      next: { tags: ['subscriptions'], revalidate: 30 }
+      next: { tags: ['subscriptions'] },
     });
     return subscription || null;
   } catch (error) {
@@ -41,5 +41,17 @@ export async function createSubscription(payload: CreateSubscriptionPayload): Pr
   } catch (error: any) {
     console.error('Failed to create subscription:', error);
     throw new Error(error?.message || 'Failed to create subscription');
+  }
+}
+
+export async function cancelSubscription(): Promise<void> {
+  try {
+    const headers = await getAuthHeader();
+    await apiClient.delete('/subscriptions', {
+      headers,
+    });
+  } catch (error: any) {
+    console.error('Failed to cancel subscription:', error);
+    throw new Error(error?.message || 'Failed to cancel subscription');
   }
 }

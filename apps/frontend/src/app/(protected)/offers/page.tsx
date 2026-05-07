@@ -15,14 +15,15 @@ import {
   Chip,
 } from '@mui/material';
 import { fetchOffers, Offer } from '@/app/actions/offers';
-import { getCurrentSubscription, Subscription } from '@/app/actions/subscriptions';
+import { getCurrentSubscription } from '@/app/actions/subscriptions';
+import { useSubscriptionStore } from '@/store/subscription.store';
 
 export default function OffersPage() {
   const router = useRouter();
   const [offers, setOffers] = useState<Offer[]>([]);
-  const [activeSubscription, setActiveSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentSubscription, setCurrentSubscription } = useSubscriptionStore();
 
   useEffect(() => {
     const loadData = async () => {
@@ -31,7 +32,7 @@ export default function OffersPage() {
         setError(null);
 
         const offersData = await fetchOffers();
-        if (offersData.length === 0) {
+        if (!offersData.length) {
           setError('No offers available at the moment');
         } else {
           setOffers(offersData);
@@ -39,8 +40,7 @@ export default function OffersPage() {
 
         const subscription = await getCurrentSubscription();
         if (subscription) {
-          console.log('Current subscription =>', subscription);
-          setActiveSubscription(subscription);
+          setCurrentSubscription(subscription);
         }
       } catch (err) {
         setError('Failed to load offers. Please try again later.');
@@ -51,7 +51,7 @@ export default function OffersPage() {
     };
 
     loadData();
-  }, []);
+  }, [setCurrentSubscription]);
 
   if (loading) {
     return (
@@ -88,7 +88,7 @@ export default function OffersPage() {
         }}
       >
         {offers.map((offer) => {
-          const isActive = activeSubscription?.offerId === offer.id;
+          const isActive = currentSubscription?.offerId === offer.id;
           return (
             <Box key={offer.id}>
               <Card
