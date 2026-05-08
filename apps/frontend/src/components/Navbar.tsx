@@ -1,32 +1,82 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { AppBar, Toolbar, Box, Button, Typography, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
-import { getCurrentSubscription, cancelSubscription } from '@/app/actions/subscriptions';
+import {
+  getCurrentSubscription,
+  requestSuggestedOffers,
+  requestCancellation,
+} from '@/app/actions/subscriptions';
 import { logout as logoutAction } from '@/app/actions/auth/logout';
 import { useSubscriptionStore } from '@/store/subscription.store';
+import { useSuggestedSubscriptionStore } from '@/store/suggestedSubscriptions.store';
+import CancellationDialog from './CancellationDialog';
+import { UpgradeSuggestionDialog } from './UpgradeSuggestionDialog';
+import { Offer } from '@/types/offer';
+
+const timeForSuggestion = 1_000;
 
 export function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isAuthenticated, logout, refetch } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { currentSubscription, setCurrentSubscription, clearCurrentSubscription } =
-    useSubscriptionStore();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [showCancellationDialog, setShowCancellationDialog] = useState(false);
+  const [requestingCancellation, setRequestingCancellation] = useState(false);
+  const [suggestedOffers, setSuggestedOffers] = useState<Offer[]>([]);
+  const [availableUpgrade, setAvailableUpgrade] = useState(false);
+  const { currentSubscription, setCurrentSubscription } = useSubscriptionStore();
 
+  const { setSuggestedSubscriptions } = useSuggestedSubscriptionStore();
   useEffect(() => {
     const fetchSubscription = async () => {
       if (isAuthenticated) {
         const subscription = await getCurrentSubscription();
         setCurrentSubscription(subscription);
+        await fetchSuggestedOffer();
       }
     };
 
     fetchSubscription();
   }, [isAuthenticated, anchorEl, setCurrentSubscription]);
+
+  useEffect(() => {
+    if (!pathname.includes('/dashboard')) return;
+    if (!isAuthenticated || !currentSubscription) return;
+
+    const timer = setTimeout(() => {
+      fetchSuggestedOffer();
+      setDialogOpen(true);
+    }, timeForSuggestion);
+
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, currentSubscription, pathname]);
+
+  const fetchSuggestedOffer = async () => {
+    try {
+      const offers = await requestSuggestedOffers();
+      setSuggestedSubscriptions(offers);
+      if (offers && offers.length > 0) {
+        setAvailableUpgrade(true);
+        setSuggestedOffers(offers);
+      } else {
+        setAvailableUpgrade(false);
+        setSuggestedOffers([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch suggested offers:', err);
+    }
+  };
+
+  const handleChangeOffer = async () => {
+    await fetchSuggestedOffer();
+    setDialogOpen(true);
+  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,15 +94,23 @@ export function Navbar() {
     router.push('/login');
   };
 
-  const handleUnsubscribe = async () => {
+  const handleRequestCancellation = async () => {
     handleMenuClose();
+    setShowCancellationDialog(true);
+  };
+
+  const handleConfirmCancellation = async () => {
     try {
-      await cancelSubscription();
-      clearCurrentSubscription();
-      await refetch();
-      router.refresh();
+      setRequestingCancellation(true);
+      await requestCancellation();
+      setShowCancellationDialog(false);
+      const subscription = await getCurrentSubscription();
+      setCurrentSubscription(subscription);
+      await fetchSuggestedOffer();
     } catch (error) {
-      console.error('Failed to unsubscribe:', error);
+      console.error('Failed to request cancellation:', error);
+    } finally {
+      setRequestingCancellation(false);
     }
   };
 
@@ -93,20 +151,19 @@ export function Navbar() {
             </Link>
           )}
 
-          {currentSubscription && (
+          {currentSubscription && availableUpgrade && (
             <>
-              <Link href="/offers" passHref legacyBehavior>
-                <Button
-                  color="inherit"
-                  sx={{
-                    textTransform: 'none',
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.3)' },
-                  }}
-                >
-                  Change Offer
-                </Button>
-              </Link>
+              <Button
+                color="inherit"
+                onClick={handleChangeOffer}
+                sx={{
+                  textTransform: 'none',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.3)' },
+                }}
+              >
+                Change Offer
+              </Button>
             </>
           )}
 
@@ -129,7 +186,7 @@ export function Navbar() {
                 My Profile
               </MenuItem>
               {currentSubscription && (
-                <MenuItem onClick={handleUnsubscribe} sx={{ color: '#d32f2f' }}>
+                <MenuItem onClick={handleRequestCancellation} sx={{ color: '#d32f2f' }}>
                   Unsubscribe
                 </MenuItem>
               )}
@@ -138,6 +195,23 @@ export function Navbar() {
           </Box>
         </Box>
       </Toolbar>
+
+      <UpgradeSuggestionDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        suggestedOffers={suggestedOffers}
+        currentOffer={currentSubscription?.offer}
+      />
+
+      <CancellationDialog
+        open={showCancellationDialog}
+        onClose={() => setShowCancellationDialog(false)}
+        onConfirm={handleConfirmCancellation}
+        isLoading={requestingCancellation}
+        currentSubscription={currentSubscription}
+        currentOffer={currentSubscription?.offer}
+        suggestedOffers={suggestedOffers}
+      />
     </AppBar>
   );
 }

@@ -43,7 +43,7 @@ export default function ProfilePage() {
     setIsSaving(true);
     setMessage(null);
     try {
-      // TODO: Implement profile update API endpoint
+      // TODO: Implement profile update's endpoint
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       setIsEditing(false);
     } catch (error) {
@@ -63,6 +63,8 @@ export default function ProfilePage() {
       <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold' }}>
         Your Profile
       </Typography>
+
+      <Alert severity="error">Update is not available right now! To be added soon!</Alert>
 
       {message && (
         <Alert severity={message.type} sx={{ mb: 3 }}>
@@ -168,7 +170,7 @@ export default function ProfilePage() {
             </Alert>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button variant="contained" onClick={handleSave} disabled={isSaving}>
+              <Button variant="contained" onClick={handleSave} disabled={/*isSaving*/ true}>
                 Save Changes
               </Button>
               <Button

@@ -34,6 +34,7 @@ export class SubscriptionsService {
         userId,
         offerId: payload.offerId,
         status: SubscriptionStatus.ACTIVE,
+        soldPrice: offer.price,
       },
       include: { offer: true },
     });
@@ -81,11 +82,12 @@ export class SubscriptionsService {
   }
 
   async cancelSubscription(userId: string): Promise<Subscription> {
-
     await this.prisma.subscription.deleteMany({
       where: {
         userId,
-        status: SubscriptionStatus.CANCELLED,
+        status: {
+          in: [SubscriptionStatus.CANCELLED, SubscriptionStatus.CANCELLATION_PENDING],
+        },
       },
     });
 
@@ -96,7 +98,7 @@ export class SubscriptionsService {
       },
     });
 
-    if (subscription?.status !== SubscriptionStatus.ACTIVE) {
+    if (!subscription) {
       throw new BadRequestException('No active subscription to cancel');
     }
 
@@ -105,6 +107,40 @@ export class SubscriptionsService {
       data: {
         status: SubscriptionStatus.CANCELLED,
         endedAt: new Date(),
+      },
+    });
+  }
+
+  async requestCancellation(userId: string): Promise<Subscription> {
+    await this.prisma.subscription.deleteMany({
+      where: {
+        userId,
+        status: {
+          in: [SubscriptionStatus.CANCELLED, SubscriptionStatus.CANCELLATION_PENDING],
+        },
+      },
+    });
+
+    const subscription = await this.prisma.subscription.findFirst({
+      where: {
+        userId,
+        status: SubscriptionStatus.ACTIVE,
+      },
+    });
+
+    if (!subscription) {
+      throw new BadRequestException('No active subscription to cancel');
+    }
+
+    const gracePeriodEndAt = new Date();
+    gracePeriodEndAt.setMonth(gracePeriodEndAt.getMonth() + 1);
+
+    return await this.prisma.subscription.update({
+      where: { id: subscription.id },
+      data: {
+        status: SubscriptionStatus.CANCELLATION_PENDING,
+        cancellationRequestedAt: new Date(),
+        endedAt: gracePeriodEndAt,
       },
     });
   }
@@ -119,8 +155,70 @@ export class SubscriptionsService {
     });
   }
 
-  async changeSubscription(userId: string, newOfferId: string): Promise<Subscription> {
-    const currentSubscription = await this.cancelSubscription(userId);
-    return currentSubscription;
+  async changeSubscription(
+    userId: string,
+    newOfferId: string
+  ): Promise<Subscription & { offer: Offer }> {
+    const currentSubscription = await this.getUserSubscription(userId);
+    if (!currentSubscription) {
+      throw new BadRequestException('No active subscription to change');
+    }
+
+    const newOffer = await this.prisma.offer.findUnique({
+      where: { id: newOfferId },
+    });
+    if (!newOffer) {
+      throw new BadRequestException('New offer not found');
+    }
+
+    const currentPayment = await this.prisma.payment.findFirst({
+      where: { subscriptionId: currentSubscription.id },
+    });
+
+    await this.cancelSubscription(userId);
+
+    const newSubscription = await this.prisma.subscription.create({
+      data: {
+        userId,
+        offerId: newOfferId,
+        status: SubscriptionStatus.ACTIVE,
+        soldPrice: newOffer.price,
+      },
+      include: { offer: true },
+    });
+
+    if (currentPayment) {
+      await this.prisma.payment.create({
+        data: {
+          userId,
+          subscriptionId: newSubscription.id,
+          email: currentPayment.email,
+          address: currentPayment.address,
+          phoneNumber: currentPayment.phoneNumber,
+          cardLastFour: currentPayment.cardLastFour,
+        },
+      });
+    }
+
+    return newSubscription;
+  }
+
+  async suggestOffer(userId: string): Promise<Offer[]> {
+    const currentSubscription = await this.getUserSubscription(userId);
+
+    if (!currentSubscription) {
+      return [];
+    }
+
+    const allSuggestedOffers = await this.prisma.offer.findMany({
+      where: {
+        price: {
+          gt: currentSubscription.offer.price,
+        },
+      },
+      orderBy: { price: 'asc' },
+    });
+
+    return allSuggestedOffers;
   }
 }

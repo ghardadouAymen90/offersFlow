@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_ROUTES = ['/dashboard', '/offers', '/profile'];
+const PROTECTED_ROUTES = ['/dashboard', '/offers', '/profile', '/subscribe'];
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -10,13 +10,13 @@ export function proxy(request: NextRequest) {
     if (authToken) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     } else {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
   if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
     if (!authToken) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 

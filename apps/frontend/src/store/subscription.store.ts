@@ -1,5 +1,5 @@
+import { Subscription } from '@/types/subscription';
 import { create } from 'zustand';
-import { Subscription } from '@/app/actions/subscriptions';
 
 interface SubscriptionStore {
   currentSubscription: Subscription | null;

@@ -2,29 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  CircularProgress,
-  Alert,
-  Chip,
-} from '@mui/material';
+import { Box, Typography, Paper, Button, Alert, Snackbar, CircularProgress } from '@mui/material';
 import { fetchOffers } from '@/app/actions/offers';
-import { getCurrentSubscription } from '@/app/actions/subscriptions';
+import {
+  getCurrentSubscription,
+  requestSuggestedOffers,
+  quickChangeSubscription,
+} from '@/app/actions/subscriptions';
 import { useSubscriptionStore } from '@/store/subscription.store';
+import { useSuggestedSubscriptionStore } from '@/store/suggestedSubscriptions.store';
 import { Offer } from '@/types/offer';
+import OfferCard from './_components/OfferCard';
 
 export default function OffersPage() {
   const router = useRouter();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [changingOfferId, setChangingOfferId] = useState<string | null>(null);
   const { currentSubscription, setCurrentSubscription } = useSubscriptionStore();
+  const { suggestedSubscriptions, setSuggestedSubscriptions } = useSuggestedSubscriptionStore();
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,6 +40,8 @@ export default function OffersPage() {
         const subscription = await getCurrentSubscription();
         if (subscription) {
           setCurrentSubscription(subscription);
+          const suggested = await requestSuggestedOffers();
+          setSuggestedSubscriptions(suggested ?? []);
         }
       } catch (err) {
         setError('Failed to load offers. Please try again later.');
@@ -53,6 +53,26 @@ export default function OffersPage() {
 
     loadData();
   }, [setCurrentSubscription]);
+
+  const handleUpgradeOffer = async (offer: Offer) => {
+    try {
+      setChangingOfferId(offer.id);
+      setError(null);
+      await quickChangeSubscription(offer.id);
+      setSuccessMessage(`Successfully upgraded to ${offer.title}!`);
+      const subscription = await getCurrentSubscription();
+      if (subscription) {
+        setCurrentSubscription(subscription);
+        const suggested = await requestSuggestedOffers();
+        setSuggestedSubscriptions(suggested || []);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to upgrade plan');
+      console.error(err);
+    } finally {
+      setChangingOfferId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,77 +110,22 @@ export default function OffersPage() {
       >
         {offers.map((offer) => {
           const isActive = currentSubscription?.offerId === offer.id;
+          const isUpgradeAvailable = suggestedSubscriptions.some((o) => o.id === offer.id);
+          const isUnavailable = !isActive && !!currentSubscription && !isUpgradeAvailable;
+          const canSubscribe = !currentSubscription || isUpgradeAvailable;
           return (
-            <Box key={offer.id}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  border: isActive ? '2px solid #667eea' : 'none',
-                  position: 'relative',
-                  transition: 'all 0.3s ease',
-                  boxShadow: isActive ? '0 0 20px rgba(102, 126, 234, 0.3)' : undefined,
-                }}
-              >
-                {isActive && (
-                  <Chip
-                    label="Active Plan"
-                    color="primary"
-                    size="small"
-                    sx={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    }}
-                  />
-                )}
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
-                    {offer.title}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-                    {offer.description}
-                  </Typography>
-
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#667eea', mb: 2 }}>
-                      €{offer.price}/month
-                    </Typography>
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                      <Typography variant="body2">
-                        <strong>Minutes:</strong> {offer.minutes}
-                      </Typography>
-                      <Typography variant="body2">
-                        <strong>Texts:</strong> {offer.texts}
-                      </Typography>
-                      <Typography variant="body2">
-                        <strong>Data:</strong> {offer.data}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-
-                <CardActions>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    disabled={isActive}
-                    onClick={() => router.push(`/subscribe?offerId=${offer.id}`)}
-                    sx={{
-                      background: isActive
-                        ? '#ccc'
-                        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      cursor: isActive ? 'not-allowed' : 'pointer',
-                    }}
-                  >
-                    {isActive ? 'Current Plan' : 'Subscribe'}
-                  </Button>
-                </CardActions>
-              </Card>
-            </Box>
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              isActive={isActive}
+              isUpgradeAvailable={isUpgradeAvailable}
+              isUnavailable={isUnavailable}
+              canSubscribe={canSubscribe}
+              changingOfferId={changingOfferId}
+              currentSubscription={currentSubscription}
+              onUpgradeOffer={handleUpgradeOffer}
+              onSubscribe={(offerId) => router.push(`/subscribe?offerId=${offerId}`)}
+            />
           );
         })}
       </Box>
@@ -179,6 +144,21 @@ export default function OffersPage() {
           ← Back to Dashbord
         </Button>
       </Box>
+
+      <Snackbar
+        open={!!successMessage}
+        autoHideDuration={6000}
+        onClose={() => setSuccessMessage('')}
+      >
+        <Alert
+          onClose={() => setSuccessMessage('')}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

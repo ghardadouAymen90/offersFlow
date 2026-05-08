@@ -79,7 +79,7 @@ export function PaymentForm({
     }
 
     try {
-      const result = await createSubscription({
+      await createSubscription({
         offerId,
         email: formData.email,
         address: formData.address,

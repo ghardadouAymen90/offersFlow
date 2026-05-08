@@ -65,7 +65,7 @@ offersflow/
 
    ```bash
    # Generate Prisma client and push schema to database
-   pnpm run prisma:migration
+   pnpm run prisma:generate
 
    # then run migrations (after new migrations)
    pnpm run db:migrate:deploy

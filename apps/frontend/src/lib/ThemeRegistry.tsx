@@ -12,6 +12,7 @@ const theme = createTheme({
     secondary: {
       main: '#764ba2',
     },
+    // TODO: ENregistrer les couleurs utiliséés dans l'app ici
   },
   typography: {
     fontFamily: [

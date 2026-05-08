@@ -3,6 +3,6 @@ export interface PaymentFormProps {
   offerTitle: string;
   offerPrice: number;
   userEmail: string;
-  onSuccess: () => void;
-  onError: (error: string) => void;
+  onSuccess(): void;
+  onError(error: string): void;
 }

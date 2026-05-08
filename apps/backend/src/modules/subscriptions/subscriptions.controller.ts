@@ -30,9 +30,24 @@ export class SubscriptionsController {
     return await this.subscriptionsService.getUserSubscription(req.user.id);
   }
 
-  @Delete()
+  @Post('request-cancellation')
   @UseGuards(JwtAuthGuard)
-  async cancelSubscription(@Request() req: AuthRequest): Promise<Subscription> {
-    return await this.subscriptionsService.cancelSubscription(req.user.id);
+  async requestCancellation(@Request() req: AuthRequest): Promise<Subscription> {
+    return await this.subscriptionsService.requestCancellation(req.user.id);
+  }
+
+  @Get('suggest')
+  @UseGuards(JwtAuthGuard)
+  async suggestOffer(@Request() req: AuthRequest): Promise<Offer[]> {
+    return await this.subscriptionsService.suggestOffer(req.user.id);
+  }
+
+  @Post('change')
+  @UseGuards(JwtAuthGuard)
+  async changeSubscription(
+    @Request() req: AuthRequest,
+    @Body() body: { offerId: string }
+  ): Promise<Subscription & { offer: Offer }> {
+    return await this.subscriptionsService.changeSubscription(req.user.id, body.offerId);
   }
 }

@@ -50,7 +50,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
 
-      <Container maxWidth="lg" sx={{ py: 12, flexGrow: 1 }}>
+      <Container maxWidth="lg" sx={{ py: 12, flexGrow: 1}}>
         {user && (
           <Paper sx={{ p: 2, mb: 4, background: 'linear-gradient(135deg, #667eea15 0%, #764ba215 100%)' }}>
             <Typography variant="subtitle1">

@@ -1,7 +1,13 @@
+import { Offer } from './offer';
+
 export interface Subscription {
   id: string;
   offerId: string;
   status: string;
+  offer?: Offer;
+  soldPrice?: number;
+  cancellationRequestedAt?: string;
+  gracePeriodEndAt?: string;
 }
 
 export interface CreateSubscriptionPayload {

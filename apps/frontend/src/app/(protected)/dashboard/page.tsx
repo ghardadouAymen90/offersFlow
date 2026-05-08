@@ -1,7 +1,8 @@
 'use client';
 
 import { Box, Typography, Paper, Button } from '@mui/material';
-import Link from 'next/link';
+
+import DashboardCard from './_components/dashboardCard';
 
 export default function DashboardPage() {
   return (
@@ -13,33 +14,19 @@ export default function DashboardPage() {
       <Box
         sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 3, mb: 4 }}
       >
-        <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Browse Offers
-          </Typography>
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-            Explore available phone subscription plans
-          </Typography>
-          <Link href="/offers" passHref legacyBehavior>
-            <Button variant="contained" component="a">
-              View Offers
-            </Button>
-          </Link>
-        </Paper>
+        <DashboardCard
+          title="Browse Offers"
+          description="Explore available phone subscription plans"
+          actionText="View Offers"
+          linkTo="/offers"
+        />
 
-        <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Your Profile
-          </Typography>
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-            Manage your account settings
-          </Typography>
-          <Link href="/profile" passHref legacyBehavior>
-            <Button variant="contained" component="a">
-              View Profile
-            </Button>
-          </Link>
-        </Paper>
+        <DashboardCard
+          title="Your Profile"
+          description="Manage your account settings"
+          actionText="View Profile"
+          linkTo="/profile"
+        />
       </Box>
     </Box>
   );

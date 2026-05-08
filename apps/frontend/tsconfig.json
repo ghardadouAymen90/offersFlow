@@ -20,6 +20,7 @@
     "strict": true,
     "isolatedModules": true,
     "incremental": false,
+    "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -27,7 +28,6 @@
       ]
     },
     "allowJs": false,
-    "ignoreDeprecations": "5.0",
     "plugins": [
       {
         "name": "next"

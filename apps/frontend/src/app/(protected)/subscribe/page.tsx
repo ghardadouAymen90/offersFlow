@@ -22,18 +22,12 @@ import { Offer } from '@/types/offer';
 export default function SubscribePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   const offerId = searchParams.get('offerId');
   const [offer, setOffer] = useState<Offer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
     const loadOffer = async () => {
@@ -151,7 +145,6 @@ export default function SubscribePage() {
           </Box>
 
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4 }}>
-            {/* Offer Summary */}
             <Box>
               <Card sx={{ mb: 3, background: '#f5f5f5' }}>
                 <CardContent>
@@ -204,7 +197,6 @@ export default function SubscribePage() {
               </Card>
             </Box>
 
-            {/* Payment Form */}
             <Box>
               <PaymentForm
                 offerId={offer.id}
