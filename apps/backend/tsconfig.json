@@ -19,7 +19,7 @@
     "sourceMap": true,
     "ignoreDeprecations": "5.0",
     "baseUrl": "./",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "paths": {
       "@/*": ["src/*"]
     },
@@ -27,5 +27,5 @@
     "incremental": true
   },
   "include": ["src/**/*", "prisma/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "exclude": ["node_modules", "dist"]
 }

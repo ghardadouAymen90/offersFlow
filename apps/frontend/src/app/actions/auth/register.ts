@@ -9,6 +9,7 @@ export async function register(data: {
   fullName: string;
   email: string;
   password: string;
+  confirmPassword: string;
   gender: string;
   age: number;
 }): Promise<User> {

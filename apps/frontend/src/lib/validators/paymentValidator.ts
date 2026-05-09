@@ -7,7 +7,7 @@ export const validateCardNumber = (card: string): boolean => {
 };
 
 export const validatePhoneNumber = (phone: string): boolean => {
-  const cleanPhone = phone.replace(/[\s\-()]/g, '');
+  const cleanPhone = phone.replace(/[\s\-()]+/g, '').replace(/^\+/, '');
   return /^\d{10,15}$/.test(cleanPhone);
 };
 
