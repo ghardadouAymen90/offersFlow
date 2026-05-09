@@ -3,16 +3,9 @@
 import { apiClient } from '@/lib/apiClient';
 import { setAuthCookie } from '@/lib/authCookie';
 import { registerSchema } from '@/schemas/auth/register';
-import { AuthResponse, User } from '@/types/user';
+import { AuthResponse, RegisterPayload, User } from '@/types/user';
 
-export async function register(data: {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: string;
-  age: number;
-}): Promise<User> {
+export async function register(data: RegisterPayload): Promise<User> {
   try {
     const validation = registerSchema.safeParse(data);
     if (!validation.success) {
