@@ -2,25 +2,12 @@ import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from '@/modules/users/users.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { AuthResponseDto } from './dto/auth-response.dto';
 import { User } from '@prisma/client';
 
-interface RegisterDto {
-  email: string;
-  password: string;
-  fullName: string;
-  gender: string;
-  age: number;
-}
-
-interface LoginDto {
-  email: string;
-  password: string;
-}
-
-interface AuthResponse {
-  user: Omit<User, 'password'>;
-  token: string;
-}
+export type SubscribeResponse = AuthResponseDto;
 
 @Injectable()
 export class AuthService {
@@ -29,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<AuthResponse> {
+  async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const { email, password, fullName, gender, age } = registerDto;
 
     const existingUser = await this.usersService.findByEmail(email);
@@ -59,7 +46,7 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponse> {
+  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
     const { email, password } = loginDto;
 
     const user = await this.usersService.findByEmail(email);

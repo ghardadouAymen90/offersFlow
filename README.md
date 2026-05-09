@@ -1,182 +1,210 @@
 # OffersFlow
 
-A monorepo application with a Next.js frontend and NestJS backend, managed with Turborepo and pnpm.
+A phone subscription management system with a Next.js frontend and NestJS backend, managed with Turborepo and pnpm.
 
-## Project Structure
+## 🚀 Key Features
+
+- **User Authentication** - Secure registration and login with JWT tokens
+- **Subscription Management** - Subscribe, upgrade, and cancel plans
+- **Grace Period Cancellation** - 1-month grace period before final cancellation
+- **Retention Offers** - Discounts offered during cancellation (20% on current plan, 30% on upgrades)
+- **Responsive UI** - Mobile-first design with Material-UI
+- **REST API with Swagger** - Interactive API documentation at `/api`
+
+## 📋 Project Structure
 
 ```
 offersflow/
 ├── apps/
-│   ├── frontend/        # Next.js frontend application
-│   └── backend/         # NestJS backend API with Prisma
-├── packages/            # Shared packages (if needed)
+│   ├── frontend/        # Next.js React frontend
+│   └── backend/         # NestJS REST API
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── turbo.json
 └── README.md
 ```
 
-## Tech Stack
+## 🛠 Tech Stack
 
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Frontend**: Next.js, React , TypeScript
-- **Backend**: NestJS, PostgreSQL, Prisma ORM
-- **Package Manager**: pnpm
+- **Frontend**: Next.js 14, React, TypeScript, Material-UI, Zustand
+- **Backend**: NestJS, PostgreSQL, Prisma ORM, JWT Auth
+- **Documentation**: Swagger/OpenAPI
 
-## Prerequisites
+## ⚙️ Prerequisites
 
 - Node.js 20+
-- pnpm 7 (install with `npm install -g pnpm@7.33.6`)
-- PostgreSQL 12+ (for the backend)
+- pnpm 7+ (`npm install -g pnpm`)
+- PostgreSQL 12+ (or Docker)
 
-## Installation
+## 🚀 Quick Start
 
-1. **Install dependencies**
+### 1. Install dependencies
 
-   ```bash
-   pnpm install
-   ```
+```bash
+pnpm install
+```
 
-2. **Start the database with Docker**
+### 2. Start PostgreSQL (Docker)
 
-   ```bash
-   pnpm db:up
-   ```
+```bash
+docker-compose up -d
+```
 
-   ===> This starts PostgreSQL in a Docker container
+### 3. Set up environment variables
 
-3. **Set up environment variables**
+```bash
+# Backend
+cp apps/backend/.env.example apps/backend/.env
 
-   Copy `.env.example` files and configure them:
+# Frontend
+cp apps/frontend/.env.example apps/frontend/.env
+```
 
-   ```bash
-   # Root
-   cp .env.example .env
+### 4. Initialize database
 
-   # Backend
-   cp apps/backend/.env.example apps/backend/.env
-   # The default .env.example already has the Docker database URL configured
+```bash
+pnpm run db:up
+pnpm -F backend run prisma migrate deploy
+pnpm -F backend run seed
+```
 
-   # Frontend (optional)
-   cp apps/frontend/.env.example apps/frontend/.env
-   ```
-
-4. **Set up the database schema**
-
-   ```bash
-   # Generate Prisma client and push schema to database
-   pnpm run prisma:generate
-
-   # then run migrations (after new migrations)
-   pnpm run db:migrate:deploy
-
-   # Then seed data
-   pnpm run db:seed
-   ```
-
-## Development
-
-### Run all apps in development mode
+### 5. Start development servers
 
 ```bash
 pnpm run dev
 ```
 
-This starts:
+**Access:**
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:3001`
+- **API Docs**: `http://localhost:3001/api` (Swagger)
 
-- Frontend on `http://localhost:3000`
-- Backend on `http://localhost:3001`
+## 📚 API Documentation
 
-### Run individual apps
+Interactive Swagger documentation is available at:
+```
+http://localhost:3001/api
+```
+
+### Core Endpoints
+
+**Authentication**
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login user
+- `GET /auth/me` - Get current user profile
+
+**Offers**
+- `GET /offers` - List all subscription offers
+- `GET /offers/:id` - Get offer details
+
+**Subscriptions**
+- `POST /subscriptions` - Create subscription
+- `GET /subscriptions/current` - Get active subscription
+- `POST /subscriptions/change` - Upgrade subscription
+- `POST /subscriptions/request-cancellation` - Request cancellation with grace period
+- `GET /subscriptions/suggest` - Get upgrade suggestions
+
+## 📖 Development
+
+### Frontend Development
 
 ```bash
-# Frontend only
+# Start frontend only
 pnpm -F frontend dev
 
-# Backend only
+# Build for production
+pnpm -F frontend build
+```
+
+### Backend Development
+
+```bash
+# Start backend only
 pnpm -F backend dev
+
+# Run database migrations
+pnpm -F backend run db:migrate:dev --name migration_name
 
 # Open Prisma Studio
 pnpm -F backend run db:studio
 ```
 
-## Building
-
-Build all apps for production:
+### Database
 
 ```bash
+# Create migration
+pnpm -F backend run db:migrate:dev --name <migration_name>
+
+# Push schema (development only)
+pnpm -F backend run db:push
+
+# Seed database
+pnpm -F backend run seed
+
+# Reset database (⚠️ loses all data)
+pnpm -F backend run db:reset
+```
+
+## 🧪 Testing
+
+```bash
+# Run tests
+pnpm run test
+
+# Run tests for specific app
+pnpm -F backend run test
+pnpm -F frontend run test
+```
+
+## 📦 Build for Production
+
+```bash
+# Build all apps
 pnpm build
-```
 
-Build a specific app:
-
-```bash
-pnpm -F frontend build
+# Build specific app
 pnpm -F backend build
+pnpm -F frontend build
 ```
 
-## Database Migrations
-
-After modifying `prisma/schema.prisma`:
+## 🔍 Code Quality
 
 ```bash
-# Create a new migration
-pnpm db:migrate:dev --name migration_name
-
-# Push changes to database (development)
-pnpm db:push
-
-# Deploy migrations (production)
-pnpm db:migrate:deploy
-```
-
-## Docker Database Management
-
-Manage PostgreSQL container from the root directory:
-
-```bash
-# Start the database
-pnpm db:up
-
-# Stop the database
-pnpm db:down
-
-# View database logs
-pnpm db:logs
-
-# Reset database (removes all data and recreates)
-pnpm db:reset
-```
-
-## Linting & Type Checking
-
-```bash
-# Run linters across all apps
+# Lint code
 pnpm lint
 
-# Type check across all apps
+# Type check
 pnpm type-check
 
 # Format code
 pnpm format
-
-# Check formatting
-pnpm format:check
 ```
 
-## Troubleshooting
+## 📝 Environment Variables
 
-### Database connection issues
+### Backend (`.env`)
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/offersflow"
+JWT_SECRET="your-secret-key"
+JWT_EXPIRATION="7d"
+PORT=3001
+```
 
-- Ensure PostgreSQL is running
-- Verify `DATABASE_URL` in `.env`
-- Check credentials and database name
+### Frontend (`.env.local`)
+```
+NEXT_PUBLIC_API_URL="http://localhost:3001"
+```
 
-### pnpm issues
+## 🐛 Troubleshooting
 
-- Clear cache: `pnpm store prune`
-- Reinstall dependencies: `rm -rf node_modules && pnpm install`
+| Issue | Solution |
+|-------|----------|
+| Database connection error | Verify PostgreSQL is running, check `DATABASE_URL` |
+| Port already in use | Change port in `.env` or kill process |
+| pnpm errors | Run `pnpm store prune && pnpm install` |
+| Prisma client missing | Run `pnpm -F backend run prisma generate` |
 
-## License
+## 📄 License
 
 MIT
