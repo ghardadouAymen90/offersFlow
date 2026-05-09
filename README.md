@@ -2,7 +2,7 @@
 
 A phone subscription management system with a Next.js frontend and NestJS backend, managed with Turborepo and pnpm.
 
-## 🚀 Key Features
+## Key Features
 
 - **User Authentication** - Secure registration and login with JWT tokens
 - **Subscription Management** - Subscribe, upgrade, and cancel plans
@@ -11,7 +11,7 @@ A phone subscription management system with a Next.js frontend and NestJS backen
 - **Responsive UI** - Mobile-first design with Material-UI
 - **REST API with Swagger** - Interactive API documentation at `/api`
 
-## 📋 Project Structure
+## Project Structure
 
 ```
 offersflow/
@@ -24,7 +24,7 @@ offersflow/
 └── README.md
 ```
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Monorepo**: Turborepo + pnpm workspaces
 - **Frontend**: Next.js 14, React, TypeScript, Material-UI, Zustand
@@ -37,7 +37,7 @@ offersflow/
 - pnpm 7+ (`npm install -g pnpm`)
 - PostgreSQL 12+ (or Docker)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install dependencies
 
@@ -80,7 +80,7 @@ pnpm run dev
 - Backend: `http://localhost:3001`
 - **API Docs**: `http://localhost:3001/api` (Swagger)
 
-## 📚 API Documentation
+## API Documentation
 
 Interactive Swagger documentation is available at:
 ```
@@ -105,7 +105,7 @@ http://localhost:3001/api
 - `POST /subscriptions/request-cancellation` - Request cancellation with grace period
 - `GET /subscriptions/suggest` - Get upgrade suggestions
 
-## 📖 Development
+## Development
 
 ### Frontend Development
 
@@ -146,7 +146,7 @@ pnpm -F backend run seed
 pnpm -F backend run db:reset
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run tests
@@ -157,7 +157,7 @@ pnpm -F backend run test
 pnpm -F frontend run test
 ```
 
-## 📦 Build for Production
+## Build for Production
 
 ```bash
 # Build all apps
@@ -168,7 +168,7 @@ pnpm -F backend build
 pnpm -F frontend build
 ```
 
-## 🔍 Code Quality
+## Code Quality
 
 ```bash
 # Lint code
@@ -181,7 +181,7 @@ pnpm type-check
 pnpm format
 ```
 
-## 📝 Environment Variables
+## Environment Variables
 
 ### Backend (`.env`)
 ```
@@ -196,15 +196,17 @@ PORT=3001
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 ```
 
-## 🐛 Troubleshooting
+## Backend error handling (Globals)
 
-| Issue | Solution |
-|-------|----------|
-| Database connection error | Verify PostgreSQL is running, check `DATABASE_URL` |
-| Port already in use | Change port in `.env` or kill process |
-| pnpm errors | Run `pnpm store prune && pnpm install` |
-| Prisma client missing | Run `pnpm -F backend run prisma generate` |
+1. LoggingInterceptor (logging.interceptor.ts)
+Logs all HTTP requests:
 
-## 📄 License
+- Request method, URL, status code, duration
+- Catches errors and logs them with duration
+- Formatted output: GET /subscriptions - 200 (45ms)
 
-MIT
+2. HttpExceptionFilter (http-exception.filter.ts)
+Handles all exceptions with proper logging:
+
+- Catches HttpException and logs as warnings (400, 401, etc.)
+- Catches unhandled Error exceptions and logs them as errors

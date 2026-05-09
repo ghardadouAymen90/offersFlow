@@ -42,7 +42,6 @@ model Offer {
   isForSwitch            Boolean @default(true)
   isForReSubscription    Boolean @default(true)
 
-  // Optional: store advantages as JSON (flexible)
   advantages Json
 
   subscriptions Subscription[]
@@ -57,9 +56,9 @@ model Subscription {
   status    SubscriptionStatus  @default(ACTIVE)
   startedAt DateTime            @default(now())
   endedAt   DateTime?
-  soldPrice Int?                // Price paid for subscription in cents
-  cancellationRequestedAt DateTime? // When user requested cancellation
-  gracePeriodEndAt DateTime?     // When grace period expires (1 month after cancellation request)
+  soldPrice Int?                
+  cancellationRequestedAt DateTime? 
+  gracePeriodEndAt DateTime?    
 
   user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   offer     Offer               @relation(fields: [offerId], references: [id], onDelete: Cascade)
@@ -79,7 +78,7 @@ model Payment {
   email         String
   address       String
   phoneNumber   String
-  cardLastFour  String   // Only store last 4 digits for security
+  cardLastFour  String  
 
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
