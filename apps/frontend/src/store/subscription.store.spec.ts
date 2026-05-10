@@ -1,3 +1,4 @@
+import { Subscription } from '@/types/subscription';
 import { useSubscriptionStore } from './subscription.store';
 
 describe('Subscription Store', () => {
@@ -22,10 +23,10 @@ describe('Subscription Store', () => {
       endedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
-      cancellationRequestedAt: null,
-      gracePeriodEndAt: null,
+      cancellationRequestedAt: undefined,
+      gracePeriodEndAt: undefined,
       soldPrice: 15,
-    };
+    } as Subscription;
 
     useSubscriptionStore.getState().setCurrentSubscription(mockSubscription);
 
@@ -45,10 +46,10 @@ describe('Subscription Store', () => {
       endedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
-      cancellationRequestedAt: null,
-      gracePeriodEndAt: null,
+      cancellationRequestedAt: undefined,
+      gracePeriodEndAt: undefined,
       soldPrice: 15,
-    };
+    } as Subscription;
 
     useSubscriptionStore.getState().setCurrentSubscription(mockSubscription);
     const storeAfterSet = useSubscriptionStore.getState();

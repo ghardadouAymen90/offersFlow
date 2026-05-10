@@ -27,7 +27,7 @@ offersflow/
 ## Tech Stack
 
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Frontend**: Next.js 14, React, TypeScript, Material-UI, Zustand
+- **Frontend**: Next.js, React, TypeScript, Material-UI, Zustand
 - **Backend**: NestJS, PostgreSQL, Prisma ORM, JWT Auth
 - **Documentation**: Swagger/OpenAPI
 

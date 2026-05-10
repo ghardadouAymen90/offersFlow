@@ -6,8 +6,8 @@ export interface Subscription {
   status: string;
   offer?: Offer;
   soldPrice?: number;
-  cancellationRequestedAt?: string;
-  gracePeriodEndAt?: string;
+  cancellationRequestedAt?: string | Date;
+  gracePeriodEndAt?: string | Date;
 }
 
 export interface CreateSubscriptionPayload {

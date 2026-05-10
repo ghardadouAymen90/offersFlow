@@ -6,8 +6,8 @@ export interface User {
   fullName: string;
   gender: Gender;
   age: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export interface RegisterPayload {

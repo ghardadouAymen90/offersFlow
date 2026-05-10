@@ -2,6 +2,7 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { useAuth } from './useAuth';
 import * as meAction from '@/app/actions/auth/me';
 import * as logoutAction from '@/app/actions/auth/logout';
+import { User, Gender } from '@/types/user';
 
 jest.mock('@/app/actions/auth/me');
 jest.mock('@/app/actions/auth/logout');
@@ -30,11 +31,11 @@ describe('useAuth Hook', () => {
       id: 'user-123',
       email: 'test@example.com',
       fullName: 'Test User',
-      gender: 'MALE',
+      gender: 'MALE' as Gender,
       age: 25,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as User ;
 
     mockGetCurrentUser.mockResolvedValue(mockUser);
 
@@ -86,7 +87,7 @@ describe('useAuth Hook', () => {
       age: 25,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as User;
 
     mockGetCurrentUser.mockResolvedValue(mockUser);
     mockLogout.mockResolvedValue(undefined);
@@ -114,11 +115,11 @@ describe('useAuth Hook', () => {
       id: 'user-123',
       email: 'test@example.com',
       fullName: 'Test User',
-      gender: 'MALE',
+      gender: 'MALE' as Gender,
       age: 25,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    } as User;
 
     mockGetCurrentUser.mockResolvedValue(mockUser);
 
