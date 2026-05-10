@@ -51,7 +51,6 @@ describe('SubscriptionsService', () => {
     updatedAt: new Date(),
   };
 
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -150,7 +149,9 @@ describe('SubscriptionsService', () => {
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
 
       await expect(service.subscribe('user-123', createDto)).rejects.toThrow(
-        new BadRequestException('User already has an active subscription. Change subscription instead.')
+        new BadRequestException(
+          'User already has an active subscription. Change subscription instead.'
+        )
       );
     });
   });
@@ -159,14 +160,12 @@ describe('SubscriptionsService', () => {
     it('should cancel active subscription successfully', async () => {
       jest.spyOn(prismaService.subscription, 'deleteMany').mockResolvedValue({ count: 0 });
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
-      jest
-        .spyOn(prismaService.subscription, 'update')
-        .mockResolvedValue({
-          ...mockSubscription,
-          status: SubscriptionStatus.CANCELLED,
-          endedAt: new Date(),
-          gracePeriodEndAt: null,
-        });
+      jest.spyOn(prismaService.subscription, 'update').mockResolvedValue({
+        ...mockSubscription,
+        status: SubscriptionStatus.CANCELLED,
+        endedAt: new Date(),
+        gracePeriodEndAt: null,
+      });
 
       const result = await service.cancelSubscription('user-123');
 
@@ -188,14 +187,12 @@ describe('SubscriptionsService', () => {
     it('should request cancellation with grace period', async () => {
       jest.spyOn(prismaService.subscription, 'deleteMany').mockResolvedValue({ count: 0 });
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
-      jest
-        .spyOn(prismaService.subscription, 'update')
-        .mockResolvedValue({
-          ...mockSubscription,
-          status: SubscriptionStatus.CANCELLATION_PENDING,
-          cancellationRequestedAt: new Date(),
-          gracePeriodEndAt: new Date(),
-        });
+      jest.spyOn(prismaService.subscription, 'update').mockResolvedValue({
+        ...mockSubscription,
+        status: SubscriptionStatus.CANCELLATION_PENDING,
+        cancellationRequestedAt: new Date(),
+        gracePeriodEndAt: new Date(),
+      });
 
       const result = await service.requestCancellation('user-123');
 
@@ -245,9 +242,14 @@ describe('SubscriptionsService', () => {
     it('should change to new offer successfully', async () => {
       const newOffer = { ...mockOffer, id: 'offer-456', price: 149 };
       const newSubscription = { ...mockSubscription, offerId: 'offer-456', soldPrice: 149 };
-      const cancelledSubscription = { ...mockSubscription, status: SubscriptionStatus.CANCELLED, gracePeriodEndAt: null };
+      const cancelledSubscription = {
+        ...mockSubscription,
+        status: SubscriptionStatus.CANCELLED,
+        gracePeriodEndAt: null,
+      };
 
-      jest.spyOn(prismaService.subscription, 'findFirst')
+      jest
+        .spyOn(prismaService.subscription, 'findFirst')
         .mockResolvedValueOnce(mockSubscription) // getUserSubscription
         .mockResolvedValueOnce(mockSubscription) // cancelSubscription -> findFirst
         .mockResolvedValueOnce(null); // After changeSubscription create
@@ -255,9 +257,7 @@ describe('SubscriptionsService', () => {
       jest.spyOn(prismaService.offer, 'findUnique').mockResolvedValue(newOffer);
       jest.spyOn(prismaService.payment, 'findFirst').mockResolvedValue(mockPayment);
       jest.spyOn(prismaService.subscription, 'deleteMany').mockResolvedValue({ count: 0 });
-      jest
-        .spyOn(prismaService.subscription, 'update')
-        .mockResolvedValue(cancelledSubscription);
+      jest.spyOn(prismaService.subscription, 'update').mockResolvedValue(cancelledSubscription);
       jest.spyOn(prismaService.subscription, 'create').mockResolvedValue(newSubscription);
       jest.spyOn(prismaService.payment, 'create').mockResolvedValue(mockPayment);
 

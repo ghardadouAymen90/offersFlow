@@ -11,7 +11,6 @@ jest.mock('next/navigation', () => ({
   usePathname: () => '/login',
 }));
 
-
 jest.mock('@/hooks/useAuth', () => ({
   useAuth: jest.fn(() => ({
     user: null,

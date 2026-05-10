@@ -135,15 +135,13 @@ describe('Auth Routes Integration Tests', () => {
 
     beforeAll(async () => {
       testEmail = `login-test-${Date.now()}@example.com`;
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: testEmail,
-          password: testPassword,
-          fullName: 'Login Test User',
-          age: 25,
-          gender: 'FEMALE',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: testEmail,
+        password: testPassword,
+        fullName: 'Login Test User',
+        age: 25,
+        gender: 'FEMALE',
+      });
     });
 
     it('should login with valid credentials', async () => {
@@ -203,15 +201,13 @@ describe('Auth Routes Integration Tests', () => {
 
     beforeAll(async () => {
       testEmail = `me-test-${Date.now()}@example.com`;
-      const registerResponse = await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: testEmail,
-          password: 'Test@1234',
-          fullName: 'Me Test User',
-          age: 30,
-          gender: 'MALE',
-        });
+      const registerResponse = await request(app.getHttpServer()).post('/auth/register').send({
+        email: testEmail,
+        password: 'Test@1234',
+        fullName: 'Me Test User',
+        age: 30,
+        gender: 'MALE',
+      });
       authToken = registerResponse.body.token;
     });
 
@@ -226,9 +222,7 @@ describe('Auth Routes Integration Tests', () => {
     });
 
     it('should reject request without token', async () => {
-      await request(app.getHttpServer())
-        .get('/auth/me')
-        .expect(401);
+      await request(app.getHttpServer()).get('/auth/me').expect(401);
     });
 
     it('should reject request with invalid token', async () => {

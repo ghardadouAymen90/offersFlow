@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -23,9 +19,7 @@
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "allowJs": false,
     "plugins": [
@@ -34,17 +28,6 @@
       }
     ]
   },
-  "include": [
-    "jest.d.ts",
-    "next-env.d.ts",
-    "src",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    ".next",
-    "coverage"
-  ]
+  "include": ["jest.d.ts", "next-env.d.ts", "src", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "dist", "build", ".next", "coverage"]
 }

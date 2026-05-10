@@ -13,7 +13,9 @@ jest.mock('@/lib/authCookie');
 jest.mock('@/lib/apiClient');
 
 describe('Subscription Actions', () => {
-  const mockGetAuthHeader = authCookieModule.getAuthHeader as jest.MockedFunction<typeof authCookieModule.getAuthHeader>;
+  const mockGetAuthHeader = authCookieModule.getAuthHeader as jest.MockedFunction<
+    typeof authCookieModule.getAuthHeader
+  >;
   const mockApiClient = apiClientModule.apiClient as jest.Mocked<typeof apiClientModule.apiClient>;
 
   beforeEach(() => {
@@ -86,7 +88,11 @@ describe('Subscription Actions', () => {
       const result = await createSubscription(payload);
 
       expect(result).toEqual(mockResponse);
-      expect(mockApiClient.post).toHaveBeenCalledWith('/subscriptions', payload, expect.any(Object));
+      expect(mockApiClient.post).toHaveBeenCalledWith(
+        '/subscriptions',
+        payload,
+        expect.any(Object)
+      );
     });
 
     it('should throw error on API failure', async () => {

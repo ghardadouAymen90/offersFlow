@@ -6,7 +6,9 @@ jest.mock('@/lib/authCookie');
 jest.mock('@/lib/apiClient');
 
 describe('Register Action', () => {
-  const mockSetAuthCookie = authCookieModule.setAuthCookie as jest.MockedFunction<typeof authCookieModule.setAuthCookie>;
+  const mockSetAuthCookie = authCookieModule.setAuthCookie as jest.MockedFunction<
+    typeof authCookieModule.setAuthCookie
+  >;
   const mockApiClient = apiClientModule.apiClient as jest.Mocked<typeof apiClientModule.apiClient>;
 
   beforeEach(() => {

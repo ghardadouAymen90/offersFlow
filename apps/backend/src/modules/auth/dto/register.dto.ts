@@ -7,7 +7,7 @@ export class RegisterDto {
   @ApiProperty({
     example: 'john@example.com',
     description: 'User email address',
-    required: true
+    required: true,
   })
   email: string;
 
@@ -16,7 +16,7 @@ export class RegisterDto {
     example: 'SecurePassword123',
     description: 'User password (minimum 6 characters)',
     minLength: 6,
-    required: true
+    required: true,
   })
   password: string;
 
@@ -24,7 +24,7 @@ export class RegisterDto {
   @ApiProperty({
     example: 'John Doe',
     description: 'User full name',
-    required: true
+    required: true,
   })
   fullName: string;
 
@@ -33,7 +33,7 @@ export class RegisterDto {
     example: 'MALE',
     enum: ['MALE', 'FEMALE', 'OTHER'],
     description: 'User gender',
-    required: true
+    required: true,
   })
   gender: string;
 
@@ -42,7 +42,7 @@ export class RegisterDto {
     example: 25,
     description: 'User age',
     minimum: 18,
-    required: true
+    required: true,
   })
   age: number;
 }

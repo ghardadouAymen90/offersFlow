@@ -9,7 +9,7 @@ export async function fetchOffers(): Promise<Offer[]> {
     const headers = await getAuthHeader();
     const offers = await apiClient.get<Offer[]>('/offers', {
       headers,
-      next: { tags: ['offers'], revalidate: 60 }
+      next: { tags: ['offers'], revalidate: 60 },
     });
     return offers;
   } catch (error) {

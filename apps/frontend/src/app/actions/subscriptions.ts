@@ -34,9 +34,13 @@ export async function createSubscription(payload: CreateSubscriptionPayload): Pr
 export async function requestCancellation(): Promise<Subscription> {
   try {
     const headers = await getAuthHeader();
-    const response = await apiClient.post<Subscription>('/subscriptions/request-cancellation', {}, {
-      headers,
-    });
+    const response = await apiClient.post<Subscription>(
+      '/subscriptions/request-cancellation',
+      {},
+      {
+        headers,
+      }
+    );
     return response;
   } catch (error: any) {
     console.error('Failed to request cancellation:', error);
@@ -47,9 +51,13 @@ export async function requestCancellation(): Promise<Subscription> {
 export async function confirmCancellation(): Promise<Subscription> {
   try {
     const headers = await getAuthHeader();
-    const response = await apiClient.post<Subscription>('/subscriptions/confirm-cancellation', {}, {
-      headers,
-    });
+    const response = await apiClient.post<Subscription>(
+      '/subscriptions/confirm-cancellation',
+      {},
+      {
+        headers,
+      }
+    );
     return response;
   } catch (error: any) {
     console.error('Failed to confirm cancellation:', error);
@@ -74,7 +82,8 @@ export async function requestSuggestedOffers(): Promise<any[]> {
 export async function quickChangeSubscription(newOfferId: string): Promise<any> {
   try {
     const headers = await getAuthHeader();
-    const response = await apiClient.post('/subscriptions/change', 
+    const response = await apiClient.post(
+      '/subscriptions/change',
       { offerId: newOfferId },
       { headers }
     );
@@ -85,17 +94,21 @@ export async function quickChangeSubscription(newOfferId: string): Promise<any> 
   }
 }
 
-export async function changeSubscription(newOfferId: string, paymentData: CreateSubscriptionPayload): Promise<any> {
+export async function changeSubscription(
+  newOfferId: string,
+  paymentData: CreateSubscriptionPayload
+): Promise<any> {
   try {
     const headers = await getAuthHeader();
-    
+
     await apiClient.delete('/subscriptions', { headers });
-    
-    const response = await apiClient.post('/subscriptions', 
+
+    const response = await apiClient.post(
+      '/subscriptions',
       { ...paymentData, offerId: newOfferId },
       { headers }
     );
-    
+
     return response;
   } catch (error: any) {
     console.error('Failed to change subscription:', error);

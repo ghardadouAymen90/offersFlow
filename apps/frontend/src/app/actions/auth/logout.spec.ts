@@ -4,7 +4,9 @@ import * as authCookieModule from '@/lib/authCookie';
 jest.mock('@/lib/authCookie');
 
 describe('Logout Action', () => {
-  const mockClearAuthCookie = authCookieModule.clearAuthCookie as jest.MockedFunction<typeof authCookieModule.clearAuthCookie>;
+  const mockClearAuthCookie = authCookieModule.clearAuthCookie as jest.MockedFunction<
+    typeof authCookieModule.clearAuthCookie
+  >;
 
   beforeEach(() => {
     jest.clearAllMocks();

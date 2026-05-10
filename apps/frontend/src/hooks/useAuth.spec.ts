@@ -8,7 +8,9 @@ jest.mock('@/app/actions/auth/me');
 jest.mock('@/app/actions/auth/logout');
 
 describe('useAuth Hook', () => {
-  const mockGetCurrentUser = meAction.getCurrentUser as jest.MockedFunction<typeof meAction.getCurrentUser>;
+  const mockGetCurrentUser = meAction.getCurrentUser as jest.MockedFunction<
+    typeof meAction.getCurrentUser
+  >;
   const mockLogout = logoutAction.logout as jest.MockedFunction<typeof logoutAction.logout>;
 
   beforeEach(() => {
@@ -35,7 +37,7 @@ describe('useAuth Hook', () => {
       age: 25,
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as User ;
+    } as User;
 
     mockGetCurrentUser.mockResolvedValue(mockUser);
 

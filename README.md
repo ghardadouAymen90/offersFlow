@@ -158,9 +158,6 @@ pnpm -F backend run db:reset
 ## Testing
 
 ```bash
-# Run tests
-pnpm run test
-
 # Run tests for specific app
 pnpm -F backend run test
 pnpm -F frontend run test
@@ -201,7 +198,7 @@ JWT_EXPIRATION="7d"
 PORT=3001
 ```
 
-### Frontend (`.env.local`)
+### Frontend (`.env`)
 
 ```
 NEXT_PUBLIC_API_URL="http://localhost:3001"

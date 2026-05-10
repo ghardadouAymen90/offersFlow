@@ -1,6 +1,15 @@
 'use client';
 
-import { Box, Card, CardContent, CardActions, Button, Chip, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Chip,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { Offer } from '@/types/offer';
 import { Subscription } from '@/types/subscription';
 
