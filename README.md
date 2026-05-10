@@ -13,6 +13,8 @@ A phone subscription management system with a Next.js frontend and NestJS backen
 
 ## Project Structure
 
+MONO REPO
+
 ```
 offersflow/
 ├── apps/
@@ -34,7 +36,7 @@ offersflow/
 ## ⚙️ Prerequisites
 
 - Node.js 20+
-- pnpm 7+ (`npm install -g pnpm`)
+- pnpm 7+ (`npm install -g pnpm@7.33.6`)
 - PostgreSQL 12+ (or Docker)
 
 ## Quick Start
@@ -64,18 +66,21 @@ cp apps/frontend/.env.example apps/frontend/.env
 ### 4. Initialize database
 
 ```bash
-pnpm run db:up
-pnpm -F backend run prisma migrate deploy
-pnpm -F backend run seed
+pnpm db:up
+pnpm prisma:generate
+pnpm db:migrate:deploy
+pnpm db:seed
 ```
 
 ### 5. Start development servers
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
+Hint: think about restarting TS server if error in editor
 
 **Access:**
+
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:3001`
 - **API Docs**: `http://localhost:3001/api` (Swagger)
@@ -83,6 +88,7 @@ pnpm run dev
 ## API Documentation
 
 Interactive Swagger documentation is available at:
+
 ```
 http://localhost:3001/api
 ```
@@ -90,15 +96,18 @@ http://localhost:3001/api
 ### Core Endpoints
 
 **Authentication**
+
 - `POST /auth/register` - Register new user
 - `POST /auth/login` - Login user
 - `GET /auth/me` - Get current user profile
 
 **Offers**
+
 - `GET /offers` - List all subscription offers
 - `GET /offers/:id` - Get offer details
 
 **Subscriptions**
+
 - `POST /subscriptions` - Create subscription
 - `GET /subscriptions/current` - Get active subscription
 - `POST /subscriptions/change` - Upgrade subscription
@@ -184,6 +193,7 @@ pnpm format
 ## Environment Variables
 
 ### Backend (`.env`)
+
 ```
 DATABASE_URL="postgresql://user:password@localhost:5432/offersflow"
 JWT_SECRET="your-secret-key"
@@ -192,6 +202,7 @@ PORT=3001
 ```
 
 ### Frontend (`.env.local`)
+
 ```
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 ```
@@ -199,14 +210,14 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 ## Backend error handling (Globals)
 
 1. LoggingInterceptor (logging.interceptor.ts)
-Logs all HTTP requests:
+   Logs all HTTP requests:
 
 - Request method, URL, status code, duration
 - Catches errors and logs them with duration
 - Formatted output: GET /subscriptions - 200 (45ms)
 
 2. HttpExceptionFilter (http-exception.filter.ts)
-Handles all exceptions with proper logging:
+   Handles all exceptions with proper logging:
 
 - Catches HttpException and logs as warnings (400, 401, etc.)
 - Catches unhandled Error exceptions and logs them as errors
