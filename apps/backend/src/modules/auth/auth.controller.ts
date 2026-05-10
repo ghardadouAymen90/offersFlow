@@ -61,6 +61,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getMe(@Request() req: any): Promise<UserResponseDto> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = req.user;
     return userWithoutPassword;
   }

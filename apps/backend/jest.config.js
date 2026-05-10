@@ -2,7 +2,7 @@ module.exports = {
   displayName: 'backend',
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src', '<rootDir>/test'],
+  roots: ['<rootDir>/src'],
   testMatch: ['**/*.spec.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

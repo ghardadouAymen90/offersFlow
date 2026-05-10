@@ -131,7 +131,7 @@ describe('Auth Routes Integration Tests', () => {
 
   describe('POST /auth/login', () => {
     let testEmail: string;
-    let testPassword = 'Test@1234';
+    const testPassword = 'Test@1234';
 
     beforeAll(async () => {
       testEmail = `login-test-${Date.now()}@example.com`;

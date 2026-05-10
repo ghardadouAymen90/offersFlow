@@ -3,16 +3,5 @@
   "extends": ["next/core-web-vitals"],
   "rules": {
     "react/no-unescaped-entities": "warn"
-  },
-  "overrides": [
-    {
-      "files": ["apps/backend/**/*.ts"],
-      "extends": [
-        "plugin:@typescript-eslint/recommended"
-      ],
-      "rules": {
-        "@typescript-eslint/explicit-function-return-types": "warn"
-      }
-    }
-  ]
+  }
 }

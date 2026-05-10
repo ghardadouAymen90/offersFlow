@@ -51,17 +51,6 @@ describe('SubscriptionsService', () => {
     updatedAt: new Date(),
   };
 
-  const mockUser = {
-    id: 'user-123',
-    fullName: 'Test User',
-    gender: 'MALE',
-    age: 25,
-    email: 'test@example.com',
-    password: 'hashed-password',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    subscriptions: [mockSubscription],
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

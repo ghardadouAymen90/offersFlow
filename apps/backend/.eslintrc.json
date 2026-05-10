@@ -1,7 +1,18 @@
 {
-  "extends": "../../.eslintrc.json",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/explicit-function-return-types": "warn",
+    "@typescript-eslint/explicit-function-return-types": "off",
     "@typescript-eslint/no-explicit-any": "warn"
   }
 }
