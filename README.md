@@ -218,3 +218,14 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 
 - Catches HttpException and logs as warnings (400, 401, etc.)
 - Catches unhandled Error exceptions and logs them as errors
+
+
+## App Interfaces
+
+![Offers](screenShots/Offers.png)
+
+![Subscribe](screenShots/Subscribe.png)
+
+![SuggestUpgrade](screenShots/SuggestUpgrade.png)
+
+![Unsubscribe](screenShots/Unsubscribe.png)
