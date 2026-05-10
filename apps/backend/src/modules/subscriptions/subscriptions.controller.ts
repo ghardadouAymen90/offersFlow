@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/jwt-auth.guard';
 import { SubscriptionsService, SubscribeResponse } from './subscriptions.service';
 import { CreateSubscriptionDto } from './create-subscription.dto';
@@ -19,6 +19,7 @@ export class SubscriptionsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new subscription' })
+  @ApiBody({ type: CreateSubscriptionDto })
   @ApiResponse({ status: 201, description: 'Subscription created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid subscription data' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
