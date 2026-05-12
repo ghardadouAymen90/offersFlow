@@ -48,7 +48,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         name: exception.name,
       };
 
-      // log for unhandled errors
+      //unhandled errors
       this.logger.error(
         `${request.method} ${request.url} - ${status} - ${exception.message}`,
         exception.stack

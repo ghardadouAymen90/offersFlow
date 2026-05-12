@@ -120,7 +120,7 @@ describe('SubscriptionsService', () => {
       expect(result.subscription.soldPrice).toBe(99);
     });
 
-    it('should throw BadRequestException if offer not found', async () => {
+    it('should throw Exception if offer not found', async () => {
       const createDto: CreateSubscriptionDto = {
         offerId: 'invalid-offer',
         email: 'test@example.com',
@@ -136,7 +136,7 @@ describe('SubscriptionsService', () => {
       );
     });
 
-    it('should throw BadRequestException if user already has active subscription', async () => {
+    it('should throw Exception if user already has active subscription', async () => {
       const createDto: CreateSubscriptionDto = {
         offerId: 'offer-123',
         email: 'test@example.com',
@@ -173,7 +173,7 @@ describe('SubscriptionsService', () => {
       expect(result.endedAt).toBeDefined();
     });
 
-    it('should throw BadRequestException if no active subscription', async () => {
+    it('should throw Exception if no active subscription', async () => {
       jest.spyOn(prismaService.subscription, 'deleteMany').mockResolvedValue({ count: 0 });
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(null);
 
@@ -200,7 +200,7 @@ describe('SubscriptionsService', () => {
       expect(result.cancellationRequestedAt).toBeDefined();
     });
 
-    it('should throw BadRequestException if no active subscription to cancel', async () => {
+    it('should throw Exception if no active subscription to cancel', async () => {
       jest.spyOn(prismaService.subscription, 'deleteMany').mockResolvedValue({ count: 0 });
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(null);
 
@@ -250,9 +250,9 @@ describe('SubscriptionsService', () => {
 
       jest
         .spyOn(prismaService.subscription, 'findFirst')
-        .mockResolvedValueOnce(mockSubscription) // getUserSubscription
-        .mockResolvedValueOnce(mockSubscription) // cancelSubscription -> findFirst
-        .mockResolvedValueOnce(null); // After changeSubscription create
+        .mockResolvedValueOnce(mockSubscription) 
+        .mockResolvedValueOnce(mockSubscription)
+        .mockResolvedValueOnce(null);
 
       jest.spyOn(prismaService.offer, 'findUnique').mockResolvedValue(newOffer);
       jest.spyOn(prismaService.payment, 'findFirst').mockResolvedValue(mockPayment);
@@ -267,7 +267,7 @@ describe('SubscriptionsService', () => {
       expect(result.soldPrice).toBe(149);
     });
 
-    it('should throw BadRequestException if no active subscription to change', async () => {
+    it('should throw Exception if no active subscription to change', async () => {
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(null);
 
       await expect(service.changeSubscription('user-123', 'offer-456')).rejects.toThrow(
@@ -275,12 +275,34 @@ describe('SubscriptionsService', () => {
       );
     });
 
-    it('should throw BadRequestException if new offer not found', async () => {
+    it('should throw Exception if new offer not found', async () => {
       jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
       jest.spyOn(prismaService.offer, 'findUnique').mockResolvedValue(null);
 
       await expect(service.changeSubscription('user-123', 'invalid-offer')).rejects.toThrow(
         new BadRequestException('New offer not found')
+      );
+    });
+
+    it('should throw Exception if new offer does not have isForSwitch enabled', async () => {
+      const newOfferNoSwitch = { ...mockOffer, id: 'offer-456', isForSwitch: false };
+
+      jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
+      jest.spyOn(prismaService.offer, 'findUnique').mockResolvedValue(newOfferNoSwitch);
+
+      await expect(service.changeSubscription('user-123', 'offer-456')).rejects.toThrow(
+        new BadRequestException(
+          'This offer (Premium Plan) is not available for switching subscriptions.'
+        )
+      );
+    });
+
+    it('should throw Exception if trying to switch to same offer', async () => {
+      jest.spyOn(prismaService.subscription, 'findFirst').mockResolvedValue(mockSubscription);
+      jest.spyOn(prismaService.offer, 'findUnique').mockResolvedValue(mockOffer);
+
+      await expect(service.changeSubscription('user-123', 'offer-123')).rejects.toThrow(
+        new BadRequestException('You are already subscribed to this offer.')
       );
     });
   });

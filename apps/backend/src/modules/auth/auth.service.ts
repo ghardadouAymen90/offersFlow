@@ -7,8 +7,6 @@ import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { User } from '@prisma/client';
 
-export type SubscribeResponse = AuthResponseDto;
-
 @Injectable()
 export class AuthService {
   constructor(

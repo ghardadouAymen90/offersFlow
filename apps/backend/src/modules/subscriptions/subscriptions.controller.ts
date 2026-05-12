@@ -1,10 +1,12 @@
 import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@/modules/auth/jwt-auth.guard';
-import { SubscriptionsService, SubscribeResponse } from './subscriptions.service';
-import { CreateSubscriptionDto } from './create-subscription.dto';
 import { Subscription, Offer } from '@prisma/client';
+import { JwtAuthGuard } from '@/modules/auth/jwt-auth.guard';
+import { SubscriptionsService } from './subscriptions.service';
+import { CreateSubscriptionDto } from './create-subscription.dto';
+import { ChangeSubscriptionDto } from './change-subscription.dto';
+import { SubscribeResponse } from './subscriptionResponse.interface';
 
 interface AuthRequest extends ExpressRequest {
   user: { id: string };
@@ -64,12 +66,13 @@ export class SubscriptionsController {
   @Post('change')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Change subscription to a different offer' })
+  @ApiBody({ type: ChangeSubscriptionDto })
   @ApiResponse({ status: 200, description: 'Subscription changed successfully' })
   @ApiResponse({ status: 400, description: 'Invalid offer or cannot change to this offer' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async changeSubscription(
     @Request() req: AuthRequest,
-    @Body() body: { offerId: string }
+    @Body() body: ChangeSubscriptionDto
   ): Promise<Subscription & { offer: Offer }> {
     return await this.subscriptionsService.changeSubscription(req.user.id, body.offerId);
   }

@@ -1,12 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { CreateSubscriptionDto } from './create-subscription.dto';
-import { Subscription, Offer, Payment, SubscriptionStatus } from '@prisma/client';
-
-export interface SubscribeResponse {
-  subscription: Subscription & { offer: Offer };
-  payment: Payment;
-}
+import { Subscription, Offer, SubscriptionStatus } from '@prisma/client';
+import { SubscribeResponse } from './subscriptionResponse.interface';
 
 @Injectable()
 export class SubscriptionsService {
@@ -169,6 +165,16 @@ export class SubscriptionsService {
     });
     if (!newOffer) {
       throw new BadRequestException('New offer not found');
+    }
+
+    if (!newOffer.isForSwitch) {
+      throw new BadRequestException(
+        `This offer (${newOffer.title}) is not available for switching subscriptions.`
+      );
+    }
+
+    if (newOffer.id === currentSubscription.offer.id) {
+      throw new BadRequestException('You are already subscribed to this offer.');
     }
 
     const currentPayment = await this.prisma.payment.findFirst({
