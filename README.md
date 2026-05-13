@@ -50,7 +50,7 @@ pnpm install
 ### 2. Start PostgreSQL (Docker)
 
 ```bash
-docker-compose up -d
+pnpm db:up
 ```
 
 ### 3. Set up environment variables
@@ -84,6 +84,15 @@ Hint: think about restarting TS server if error in editor
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:3001`
 - **API Docs**: `http://localhost:3001/api` (Swagger)
+
+
+### 6. Start on docker with docker-compose (DB -> Backend -> frontend)
+
+```bash
+docker compose up -d
+```
+This will start the 3 services in sequence: DB first, then Backend(3001) then frontend(3000)
+Make sure that ports are not in use.
 
 ## API Documentation
 
