@@ -68,7 +68,11 @@ export class SubscriptionsService {
     });
 
     const [lastSubscription] = user?.subscriptions ?? [];
-    if (lastSubscription?.status !== SubscriptionStatus.ACTIVE) {
+
+    // Add check : offer.id === lastSubscription.id
+
+    // TO DO: Check conditions
+    if (lastSubscription && lastSubscription?.status !== SubscriptionStatus.ACTIVE) {
       if (!offer.isForReSubscription) {
         throw new BadRequestException(
           `This offer (${offer.title}) is not available for resubscription after cancellation.`
