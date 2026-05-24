@@ -1,20 +1,10 @@
 import { ApiErrorResponse } from '@/types/user';
+import { ApiError } from './apiError.interface';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 interface ApiOptions extends RequestInit {
   includeCredentials?: boolean;
-}
-
-export class ApiError extends Error {
-  constructor(
-    public statusCode: number,
-    public message: string,
-    public error?: string
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
@@ -35,64 +25,43 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return data as T;
 }
 
+async function handleFetch(
+  endpoint: string,
+  method: 'DELETE' | 'GET' | 'POST' | 'PUT',
+  options?: ApiOptions,
+  body?: unknown
+): Promise<Response> {
+  const { headers, ...rest } = { ...(options ?? {}) };
+  return fetch(`${API_URL}${endpoint}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: options?.includeCredentials ? 'include' : 'omit',
+    ...rest,
+  });
+}
+
 export const apiClient = {
   async get<T>(endpoint: string, options?: ApiOptions): Promise<T> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      credentials: options?.includeCredentials ? 'include' : 'omit',
-      ...options,
-    });
-
+    const response = await handleFetch(endpoint, 'GET', options);
     return handleResponse<T>(response);
   },
 
   async post<T>(endpoint: string, body?: unknown, options?: ApiOptions): Promise<T> {
-    const { headers, ...rest } = { ...(options ?? {}) };
-
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-      credentials: options?.includeCredentials ? 'include' : 'omit',
-      ...rest,
-    });
-
+    const response = await handleFetch(endpoint, 'POST', options, body);
     return handleResponse<T>(response);
   },
 
   async put<T>(endpoint: string, body?: unknown, options?: ApiOptions): Promise<T> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      body: body ? JSON.stringify(body) : undefined,
-      credentials: options?.includeCredentials ? 'include' : 'omit',
-      ...options,
-    });
-
+    const response = await handleFetch(endpoint, 'PUT', options, body);
     return handleResponse<T>(response);
   },
 
   async delete<T>(endpoint: string, options?: ApiOptions): Promise<T> {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      credentials: options?.includeCredentials ? 'include' : 'omit',
-      ...options,
-    });
-
+    const response = await handleFetch(endpoint, 'DELETE', options);
     return handleResponse<T>(response);
   },
 };

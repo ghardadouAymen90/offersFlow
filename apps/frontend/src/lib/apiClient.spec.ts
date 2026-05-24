@@ -1,4 +1,5 @@
-import { apiClient, ApiError } from './apiClient';
+import { apiClient } from './apiClient';
+import { ApiError } from './apiError.interface';
 
 global.fetch = jest.fn();
 

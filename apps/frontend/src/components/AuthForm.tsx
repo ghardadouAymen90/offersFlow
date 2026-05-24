@@ -1,5 +1,3 @@
-'use client';
-
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -15,8 +13,13 @@ import {
 } from '@mui/material';
 import { loginSchema, registerSchema, LoginFormData, RegisterFormData } from '@/schemas/auth';
 
+enum SignOperation {
+  login = 'login',
+  register = 'register',
+}
+
 interface AuthFormProps {
-  type: 'login' | 'register';
+  type: SignOperation;
   onSubmit: (data: any) => Promise<void>;
   isLoading?: boolean;
   errorMessage?: string;
@@ -25,7 +28,7 @@ interface AuthFormProps {
 type FormData = LoginFormData | RegisterFormData;
 
 export function AuthForm({ type, onSubmit, isLoading = false, errorMessage = '' }: AuthFormProps) {
-  const schema = type === 'login' ? loginSchema : registerSchema;
+  const schema = type === SignOperation.login ? loginSchema : registerSchema;
 
   const {
     control,
@@ -36,7 +39,7 @@ export function AuthForm({ type, onSubmit, isLoading = false, errorMessage = '' 
     defaultValues: {
       email: '',
       password: '',
-      ...(type === 'register' && {
+      ...(type === SignOperation.register && {
         confirmPassword: '',
         fullName: '',
         gender: 'MALE',
@@ -61,7 +64,7 @@ export function AuthForm({ type, onSubmit, isLoading = false, errorMessage = '' 
     >
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-      {type === 'register' && (
+      {type === SignOperation.register && (
         <>
           <Controller
             name="fullName"
@@ -151,7 +154,7 @@ export function AuthForm({ type, onSubmit, isLoading = false, errorMessage = '' 
         )}
       />
 
-      {type === 'register' && (
+      {type === SignOperation.register && (
         <Controller
           name="confirmPassword"
           control={control}
@@ -174,9 +177,9 @@ export function AuthForm({ type, onSubmit, isLoading = false, errorMessage = '' 
         {isLoading ? (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <CircularProgress size={20} sx={{ mr: 1 }} />
-            {type === 'login' ? 'Signing in...' : 'Creating account...'}
+            {type === SignOperation.login ? 'Signing in...' : 'Creating account...'}
           </div>
-        ) : type === 'login' ? (
+        ) : type === SignOperation.login ? (
           'Sign In'
         ) : (
           'Sign Up'

@@ -54,7 +54,7 @@ export function useAuth() {
     };
 
     fetchUser();
-  }, []); // Empty deps: run only once on mount
+  }, []);
 
   const refetch = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
