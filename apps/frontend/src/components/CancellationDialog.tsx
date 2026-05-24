@@ -39,9 +39,9 @@ export default function CancellationDialog({
   const gracePeriodDate = new Date();
   gracePeriodDate.setMonth(gracePeriodDate.getMonth() + 1);
 
+  // TODO: Rework the names here
   const discountPercentage = 15;
-  const currentDiscountedPrice =
-    Math.round(currentOffer.price * (1 - discountPercentage / 100) * 100) / 100;
+  const currentDiscountedPrice = Math.round(currentOffer.price * (1 - discountPercentage / 100) * 100) / 100;
   const upgradeDiscountPercentage = 20;
 
   return (

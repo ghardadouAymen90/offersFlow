@@ -18,7 +18,7 @@ import CancellationDialog from './CancellationDialog';
 import { UpgradeSuggestionDialog } from './UpgradeSuggestionDialog';
 import { Offer } from '@/types/offer';
 
-const timeForSuggestion = 1_000;
+const timeForSuggestion = 5_000;
 
 export function Navbar() {
   const router = useRouter();
@@ -197,7 +197,7 @@ export function Navbar() {
       </Toolbar>
 
       <UpgradeSuggestionDialog
-        open={dialogOpen}
+        open={dialogOpen && !showCancellationDialog}
         onClose={() => setDialogOpen(false)}
         suggestedOffers={suggestedOffers}
         currentOffer={currentSubscription?.offer}
